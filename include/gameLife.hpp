@@ -3,14 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
 #include <random>
 
 class GameLife{
     public:
-
-    // Random number generator
-
-    static std::mt19937 random_engine;
 
     static constexpr int DEAD = 0;
     static constexpr int ALIVE = 1;
@@ -24,9 +21,22 @@ class GameLife{
 
     GameLife(int rows = 0, int cols = 0);
 
+    // copy constructor supports following operations:
+    //  GameLife f(g);       where g is a GameLife object
+    //  GameLife f = g;      where g is a GameLife object
+    GameLife(const GameLife& rhs);
+
     ~GameLife();
 
-    void initRandom(void);    
+    // accessor functions
+    int rows(void) const;
+    int cols(void) const;
+
+    void initRandom(int min = DEAD, int max = ALIVE);   
+    
+    // overloaded operators 
+    friend std::ostream& operator << (std::ostream& os, const GameLife& obj);
+    GameLife& operator = (const GameLife& rhs);
 
     private:
 
@@ -34,6 +44,9 @@ class GameLife{
     int m_cols;
 
     int** m_grid;
+
+    void new2dGrid(int rows, int cols);
+    void free2dGrid(void);
 };
 
 
