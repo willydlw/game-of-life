@@ -11,6 +11,7 @@
 GameLife::GameLife(int rows, int cols) : m_rows(rows), m_cols(cols), m_grid(nullptr) 
 {
     std::cerr << __func__ << " default constructor executes\n";
+    new2dGrid(m_rows, m_cols);
 }
 
 // Copy constructor
@@ -153,6 +154,9 @@ GameLife& GameLife::operator = (const GameLife& rhs)
 
 void GameLife::new2dGrid(int rows, int cols)
 {
+    std::cerr << __func__ << " ready to allocate grid memory\n";
+    std::cerr << "parameters are rows: " << rows << ", cols: " << cols << "\n";
+    
     if(m_grid != nullptr){
         free2dGrid();
     }

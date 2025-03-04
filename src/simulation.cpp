@@ -1,5 +1,7 @@
 #include "simulation.hpp"
 
+#include <optional>
+
 
 Simulation::Simulation(SimConfig sc) : 
         m_window_width(sc.window_width), 
@@ -9,18 +11,25 @@ Simulation::Simulation(SimConfig sc) :
         m_cell_size(sc.cell_size),
         m_game(sc.grid_rows, sc.grid_cols)
 {
+    std::cerr << __func__ << " constructor executing\n";
     init();
 }
 
 void Simulation::init(void)
 {
+    std::cerr << __func__ << " initialization executing\n";
+    
     m_window.create(sf::VideoMode({m_window_width, m_window_height}), "Game of Life Simulation"); 
     
-    if(!m_font.openFromFile("build/bin/assets/arial.ttf"))
+    if(!m_font.openFromFile("resources/arial.ttf"))
     {
         std::cerr << "[FATAL] " << __func__ << ", failed to open font file arial.ttf\n";
         exit(EXIT_FAILURE);
     }
+
+    // TODO: pass intialization pattern to function (add to config)
+    // for now, we test with random initialization
+    m_game.initRandom();
 }
 
 Simulation::~Simulation()
@@ -31,5 +40,13 @@ Simulation::~Simulation()
 
 void Simulation::run(void)
 {
-    
+    while(m_window.isOpen()){
+        while(const std::optional event = m_window.pollEvent()){
+            if(event->is<sf::Event::Closed>()){
+                m_window.close();
+            }
+        }
+
+        m_window.display();
+    }
 }
