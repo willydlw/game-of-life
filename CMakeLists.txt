@@ -16,6 +16,8 @@ else()
     set(RESOURCE_PATH "${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}/assets/")
 endif()
 
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/bin/assets)
+
     
 
 include(FetchContent)
