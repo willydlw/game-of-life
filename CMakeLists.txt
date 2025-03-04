@@ -16,7 +16,7 @@ else()
     set(RESOURCE_PATH "${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}/assets/")
 endif()
 
-file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/bin/assets)
+#file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/bin/assets)
 
     
 
@@ -59,6 +59,15 @@ target_sources(gameLife PRIVATE
 
 target_compile_features(gameLife PRIVATE cxx_std_17)
 target_compile_options(gameLife PRIVATE -Wall -Wextra -pedantic)
+
+add_custom_target(copy_resources ALL 
+    COMMAND ${CMAKE_COMMAND} -E copy_directory 
+    ${PROJECT_SOURCE_DIR}/resources 
+    ${PROJECT_BINARY_DIR}/resources 
+    COMMENT "Copying resources into binary directory"
+)
+
+add_dependencies(gameLife copy_resources)
 
 # set include directory search paths
 target_include_directories(gameLife 
