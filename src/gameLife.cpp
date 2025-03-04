@@ -13,6 +13,7 @@ GameLife::GameLife(int rows, int cols) : m_rows(rows), m_cols(cols), m_grid(null
     std::cerr << __func__ << " default constructor executes\n";
 }
 
+// Copy constructor
 GameLife::GameLife(const GameLife& rhs)
 {
     std::cerr << __func__ << " copy constructor executes\n";
@@ -27,6 +28,27 @@ GameLife::GameLife(const GameLife& rhs)
             m_grid[r][c] = rhs.m_grid[r][c];
         }
     }
+}
+
+// move constructor - handles temporary r-values 
+// without the overhead of copying temporary data from
+// rhs to left and then deallocating rhs memory
+GameLife::GameLife(GameLife&& rhs) noexcept
+{
+    std::cerr << __func__ << " move constructor executes\n";
+
+    // this is a constructor, so no memory has been allocated for
+    // this.m_grid 
+    m_rows = rhs.m_rows;
+    m_cols = rhs.m_cols;
+    // want this to point to rhs's dynamically allocated memory
+    m_grid = rhs.m_grid;
+
+    // set rhs to nullptr so that the destructor does free the 
+    // memory to which this.m_grid points
+    rhs.m_grid = nullptr;
+    rhs.m_rows = 0;
+    rhs.m_cols = 0;
 }
 
 GameLife::~GameLife()
@@ -75,10 +97,38 @@ std::ostream& operator << (std::ostream& os, const GameLife& obj)
     return os;
 }
 
+
+// move assignment 
+// assigns r-value data to left-side without copying overhead
+GameLife& GameLife::operator = (GameLife&& rhs) noexcept
+{
+    std::cerr << __func__ << " move assignment operator= executing\n";
+    if(this != &rhs)
+    {
+        free2dGrid();
+
+        // this is a constructor, so no memory has been allocated for
+        // this.m_grid 
+        m_rows = rhs.m_rows;
+        m_cols = rhs.m_cols;
+        // want this to point to rhs's dynamically allocated memory
+        m_grid = rhs.m_grid;
+
+        // set rhs to nullptr so that the destructor does free the 
+        // memory to which this.m_grid points
+        rhs.m_grid = nullptr;
+        rhs.m_rows = 0;
+        rhs.m_cols = 0;
+    }
+
+    return *this;
+}
+
+// copy assignment
 GameLife& GameLife::operator = (const GameLife& rhs)
 {
     std::cerr << __func__ << " assignment operator executes\n";
-    
+
     // check for self-assignment 
     if(this == &rhs){
         return *this;

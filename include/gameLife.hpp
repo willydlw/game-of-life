@@ -26,6 +26,10 @@ class GameLife{
     //  GameLife f = g;      where g is a GameLife object
     GameLife(const GameLife& rhs);
 
+    // move constructor - used to assign temporary r-values 
+     // use noexcept because move assignment not allowed to throw an exception
+    GameLife(GameLife&& rhs) noexcept;
+
     ~GameLife();
 
     // accessor functions
@@ -36,7 +40,13 @@ class GameLife{
     
     // overloaded operators 
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);
+
+    // copy assignment
     GameLife& operator = (const GameLife& rhs);
+
+    // move assignment
+    // use noexcept because move assignment not allowed to throw an exception
+    GameLife& operator = (GameLife&& rhs) noexcept;
 
     private:
 
