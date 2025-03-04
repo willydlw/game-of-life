@@ -12,8 +12,8 @@ class GameLife{
 
     static std::mt19937 random_engine;
 
-    static constexpr unsigned int DEAD = 0x0;
-    static constexpr unsigned int ALIVE = 0x1;
+    static constexpr int DEAD = 0;
+    static constexpr int ALIVE = 1;
     
 
     static constexpr int NUM_NEIGHBORS = 8;
@@ -26,17 +26,14 @@ class GameLife{
 
     ~GameLife();
 
-    void initRandom(int min, int max);
-    
+    void initRandom(void);    
 
     private:
 
     int m_rows;
     int m_cols;
-    int m_cell_size;
 
-    sf::RenderWindow m_window;
-
+    int** m_grid;
 };
 
 

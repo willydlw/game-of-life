@@ -47,7 +47,9 @@ class Simulation{
     // Destructor
     ~Simulation();
 
-    void init();
+    void init(void);
+
+    void run(void);
 
     private:
 

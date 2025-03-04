@@ -27,3 +27,9 @@ Simulation::~Simulation()
 {
     std::cerr << "bye bye from ~Simulation()\n";
 }
+
+
+void Simulation::run(void)
+{
+    
+}
