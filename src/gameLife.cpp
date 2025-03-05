@@ -4,8 +4,8 @@
 
 // Neighbor offsets: dr is delta row, dc is delta column 
 // Directions:                            NE, N,  NW,  E,  W, SE,  S, SW
-const int DR[GameLife::NUM_NEIGHBORS] = {-1, -1 , -1,  0,  0, +1, +1, +1};
-const int DC[GameLife::NUM_NEIGHBORS] = {-1,  0,  +1, -1, +1, -1,  0, +1};
+const int GameLife::DR[GameLife::NUM_NEIGHBORS] = {-1, -1 , -1,  0,  0, +1, +1, +1};
+const int GameLife::DC[GameLife::NUM_NEIGHBORS] = {-1,  0,  +1, -1, +1, -1,  0, +1};
 
  
 // Constructor
@@ -68,10 +68,53 @@ void GameLife::initRandom(int min, int max)
     }
 }
 
+int GameLife::countLiveNeighbors(int row, int col)const
+{
+    int count = 0;
+    for(size_t i = 0; i < GameLife::NUM_NEIGHBORS; i++){
+        // Calculate neighbor indices so that edge cases wrap-around
+        // Ex: Neighbor row North of row 0 is bottom row, i.e. m_rows - 1
+        int r = (row + DR[i] + m_rows) % m_rows;
+        int c = (col + DC[i] + m_cols) % m_cols;
+        if(m_grid[r][c] == ALIVE){
+            count++;
+        }
+    }
+
+    return count;
+}
+
 void GameLife::nextGeneration(void)
 {
     // create 2d grid to temporarily store next generation
     std::unique_ptr<std::unique_ptr<int[]>[]> next = new2dGrid(m_rows, m_cols);
+
+    for(size_t r = 0; r < m_rows; ++r){
+        for(size_t c = 0; c < m_cols; c++){
+            int liveCount = countLiveNeighbors(r, c);
+            if(m_grid[r][c] == ALIVE){
+                // Death by isolation: live cell dies if it has one or fewer live neighbors
+                // Death by overcrowding: live cell dies if it has four or more live neighbors
+                // Survival: a live cell with one or two neighbors survives to the next generation
+                if(liveCount < 2 || liveCount > 3){
+                    next[r][c] = DEAD;
+                }
+                else{
+                    next[r][c] = ALIVE;
+                }
+            }
+            else{
+                if(liveCount == 3){
+                    // Birth: a dead cell becomes alive if it has exactly three live neighbors 
+                    next[r][c] = ALIVE;
+                }
+                else{
+                    next[r][c] = DEAD;
+                }
+            }
+        }
+    }
+    m_grid = std::move(next);    
 }
 
 void GameLife::draw(sf::RenderWindow& window, int cellSize, float thickness)
@@ -132,9 +175,6 @@ GameLife& GameLife::operator = (GameLife&& rhs) noexcept
 
 std::unique_ptr<std::unique_ptr<int[]>[]> GameLife::new2dGrid(size_t rows, size_t cols)
 {
-    std::cerr << __func__ << " ready to allocate grid memory\n";
-    std::cerr << "parameters are rows: " << rows << ", cols: " << cols << "\n";
-
     // create an array of unique_ptr to int arrays (rows)
     std::unique_ptr<std::unique_ptr<int[]>[]> matrix(new std::unique_ptr<int[]>[rows]);
  

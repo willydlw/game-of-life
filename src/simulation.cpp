@@ -48,6 +48,7 @@ void Simulation::run(void)
         }
 
         m_window.clear(sf::Color::Black);
+        m_game.nextGeneration();
 
         // draw everything here
         m_game.draw(m_window, m_cell_size, 2.0f);

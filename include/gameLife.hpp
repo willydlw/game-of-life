@@ -13,15 +13,15 @@ class GameLife{
     static constexpr int DEAD = 0;
     static constexpr int ALIVE = 1;
     
-
+    // Neighbor Constants 
     static constexpr int NUM_NEIGHBORS = 8;
 
     // Neighbor row, column offsets: dr is delta row, dc is delta column 
-    static const int DR[NUM_NEIGHBORS]; 
-    static const int DC[NUM_NEIGHBORS];
+    static const int DR[]; 
+    static const int DC[];
 
+    // Constructor
     GameLife(size_t rows = 0, size_t cols = 0);
-
 
     // prevent copy construction
     GameLife(const GameLife& rhs) = delete;
@@ -63,7 +63,10 @@ class GameLife{
     // dynamically allocated 2d integer array
     std::unique_ptr<std::unique_ptr<int[]>[]> m_grid;
 
+    // Private helper functions
     std::unique_ptr<std::unique_ptr<int[]>[]> new2dGrid(size_t rows, size_t cols);
+
+    int countLiveNeighbors(int row, int col)const;
 };
 
 

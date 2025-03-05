@@ -15,7 +15,7 @@ struct SimConfig{
     static constexpr int GRID_ROWS = 10;
     static constexpr int GRID_COLS = 10;
     static constexpr int CELL_SIZE = 40;
-    static constexpr int FRAMERATE = 60;
+    static constexpr int FRAMERATE = 5;
 
     unsigned int window_width;
     unsigned int window_height;
