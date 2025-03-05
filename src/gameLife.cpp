@@ -84,6 +84,26 @@ void GameLife::initRandom(int min, int max)
     }
 }
 
+void GameLife::draw(sf::RenderWindow& window, int cellSize)
+{
+    sf::RectangleShape rect(sf::Vector2f(cellSize, cellSize));
+    rect.setFillColor(sf::Color::White);
+    rect.setOutlineColor(sf::Color::Black);
+    rect.setOutlineThickness(2.0f);
+
+    for(int r = 0; r < m_rows; r++){
+        for(int c = 0; c < m_cols; c++){
+            if(m_grid[r][c] == GameLife::ALIVE){
+                int x = c * cellSize;
+                int y = r * cellSize;
+                rect.setPosition(sf::Vector2f(x,y));
+                window.draw(rect);
+            }
+        }
+    }
+    
+}
+
 
 std::ostream& operator << (std::ostream& os, const GameLife& obj)
 {

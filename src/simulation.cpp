@@ -6,19 +6,17 @@
 Simulation::Simulation(SimConfig sc) : 
         m_window_width(sc.window_width), 
         m_window_height(sc.window_height),
-        m_grid_rows(sc.grid_rows),
-        m_grid_cols(sc.grid_cols),
         m_cell_size(sc.cell_size),
         m_game(sc.grid_rows, sc.grid_cols)
 {
     std::cerr << __func__ << " constructor executing\n";
-    init();
+    init(sc.framerate);
 }
 
-void Simulation::init(void)
+void Simulation::init(int framerate)
 {
     std::cerr << __func__ << " initialization executing\n";
-    
+
     m_window.create(sf::VideoMode({m_window_width, m_window_height}), "Game of Life Simulation"); 
     
     if(!m_font.openFromFile("resources/arial.ttf"))
@@ -26,6 +24,8 @@ void Simulation::init(void)
         std::cerr << "[FATAL] " << __func__ << ", failed to open font file arial.ttf\n";
         exit(EXIT_FAILURE);
     }
+
+    m_window.setFramerateLimit(framerate);
 
     // TODO: pass intialization pattern to function (add to config)
     // for now, we test with random initialization
@@ -47,6 +47,10 @@ void Simulation::run(void)
             }
         }
 
+        m_window.clear(sf::Color::White);
+
+        // draw everything here
+        m_game.draw(m_window, m_cell_size);
         m_window.display();
     }
 }

@@ -37,6 +37,8 @@ class GameLife{
     int cols(void) const;
 
     void initRandom(int min = DEAD, int max = ALIVE);   
+
+    void draw(sf::RenderWindow& window, int cellSize);
     
     // overloaded operators 
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);
@@ -52,7 +54,6 @@ class GameLife{
 
     int m_rows;
     int m_cols;
-
     int** m_grid;
 
     void new2dGrid(int rows, int cols);
