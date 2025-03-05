@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
+#include <memory>
 #include <random>
 
 class GameLife{
@@ -19,32 +20,36 @@ class GameLife{
     static const int DR[NUM_NEIGHBORS]; 
     static const int DC[NUM_NEIGHBORS];
 
-    GameLife(int rows = 0, int cols = 0);
+    GameLife(size_t rows = 0, size_t cols = 0);
 
-    // copy constructor supports following operations:
-    //  GameLife f(g);       where g is a GameLife object
-    //  GameLife f = g;      where g is a GameLife object
-    GameLife(const GameLife& rhs);
+
+    // prevent copy construction
+    GameLife(const GameLife& rhs) = delete;
 
     // move constructor - used to assign temporary r-values 
      // use noexcept because move assignment not allowed to throw an exception
     GameLife(GameLife&& rhs) noexcept;
 
+    //~GameLife() = default;
     ~GameLife();
 
     // accessor functions
     int rows(void) const;
     int cols(void) const;
 
-    void initRandom(int min = DEAD, int max = ALIVE);   
+    // initial patterns
+    void initRandom(int min = DEAD, int max = ALIVE);  
 
+    void nextGeneration(void); 
+
+    // render the grid
     void draw(sf::RenderWindow& window, int cellSize, float thickness);
     
     // overloaded operators 
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);
 
-    // copy assignment
-    GameLife& operator = (const GameLife& rhs);
+    // prevent copy assignment
+    GameLife& operator = (const GameLife& rhs) = delete;
 
     // move assignment
     // use noexcept because move assignment not allowed to throw an exception
@@ -52,12 +57,13 @@ class GameLife{
 
     private:
 
-    int m_rows;
-    int m_cols;
-    int** m_grid;
+    size_t m_rows;
+    size_t m_cols;
 
-    void new2dGrid(int rows, int cols);
-    void free2dGrid(void);
+    // dynamically allocated 2d integer array
+    std::unique_ptr<std::unique_ptr<int[]>[]> m_grid;
+
+    std::unique_ptr<std::unique_ptr<int[]>[]> new2dGrid(size_t rows, size_t cols);
 };
 
 
