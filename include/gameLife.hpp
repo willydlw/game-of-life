@@ -30,8 +30,8 @@ class GameLife{
      // use noexcept because move assignment not allowed to throw an exception
     GameLife(GameLife&& rhs) noexcept;
 
-    //~GameLife() = default;
-    ~GameLife();
+    ~GameLife() = default;
+   
 
     // accessor functions
     int rows(void) const;

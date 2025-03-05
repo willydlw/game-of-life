@@ -31,18 +31,16 @@ GameLife::GameLife(GameLife&& rhs) noexcept
     // want this to point to rhs's dynamically allocated memory
     m_grid = std::move(rhs.m_grid);
 
-    // set rhs to nullptr so that the destructor does free the 
-    // memory to which this.m_grid points
+    // memory resources for rhs should be freed when the unique_ptr
+    // is reassigned. The following should not be necessary since
+    // this is an r-value.
+    #if 0
     rhs.m_grid = nullptr;
     rhs.m_rows = 0;
     rhs.m_cols = 0;
+    #endif
 }
 
-GameLife::~GameLife()
-{
-    //free2dGrid();
-    std::cerr << __func__ << " says bye-bye\n";
-}
 
 int GameLife::rows(void) const
 {
