@@ -38,7 +38,7 @@ class GameLife{
 
     void initRandom(int min = DEAD, int max = ALIVE);   
 
-    void draw(sf::RenderWindow& window, int cellSize);
+    void draw(sf::RenderWindow& window, int cellSize, float thickness);
     
     // overloaded operators 
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);

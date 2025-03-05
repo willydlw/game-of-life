@@ -84,12 +84,12 @@ void GameLife::initRandom(int min, int max)
     }
 }
 
-void GameLife::draw(sf::RenderWindow& window, int cellSize)
+void GameLife::draw(sf::RenderWindow& window, int cellSize, float thickness)
 {
-    sf::RectangleShape rect(sf::Vector2f(cellSize, cellSize));
+    sf::RectangleShape rect(sf::Vector2f(cellSize - thickness, cellSize - thickness));
     rect.setFillColor(sf::Color::White);
-    rect.setOutlineColor(sf::Color::Black);
-    rect.setOutlineThickness(2.0f);
+    rect.setOutlineColor(sf::Color::Blue);
+    rect.setOutlineThickness(thickness);
 
     for(int r = 0; r < m_rows; r++){
         for(int c = 0; c < m_cols; c++){

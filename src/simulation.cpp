@@ -47,10 +47,10 @@ void Simulation::run(void)
             }
         }
 
-        m_window.clear(sf::Color::White);
+        m_window.clear(sf::Color::Black);
 
         // draw everything here
-        m_game.draw(m_window, m_cell_size);
+        m_game.draw(m_window, m_cell_size, 2.0f);
         m_window.display();
     }
 }
