@@ -1,6 +1,7 @@
 #include "simulation.hpp"
 
 #include <optional>
+#include <sstream>
 
 
 Simulation::Simulation(SimConfig sc) : 
@@ -40,6 +41,15 @@ Simulation::~Simulation()
 
 void Simulation::run(void)
 {
+    sf::Text text(m_font);
+    const char* genMsg = "Generation ";
+
+    text.setCharacterSize(24);      // in pixels 
+    text.setFillColor(sf::Color::Red);
+    text.setStyle(sf::Text::Bold);
+
+    unsigned int genCount = 1;
+
     while(m_window.isOpen()){
         while(const std::optional event = m_window.pollEvent()){
             if(event->is<sf::Event::Closed>()){
@@ -49,6 +59,14 @@ void Simulation::run(void)
 
         m_window.clear(sf::Color::Black);
         m_game.nextGeneration();
+
+        std::stringstream ss;
+        ss << genMsg << genCount << '\n';
+        ++genCount;
+        text.setString(ss.str());
+        text.setPosition(sf::Vector2f{m_window.getSize().x - text.getGlobalBounds().size.x - 10, 
+            text.getGlobalBounds().size.y + 10});
+        m_window.draw(text);
 
         // draw everything here
         m_game.draw(m_window, m_cell_size, 2.0f);
