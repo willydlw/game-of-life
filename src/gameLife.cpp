@@ -72,10 +72,12 @@ int GameLife::countLiveNeighbors(int row, int col)const
 {
     int count = 0;
     for(size_t i = 0; i < GameLife::NUM_NEIGHBORS; i++){
-        // Calculate neighbor indices so that edge cases wrap-around
-        // Ex: Neighbor row North of row 0 is bottom row, i.e. m_rows - 1
-        int r = (row + DR[i] + m_rows) % m_rows;
-        int c = (col + DC[i] + m_cols) % m_cols;
+        int r = row + DR[i];
+        int c = col + DC[i];
+        if(r < 0 || r >= static_cast<int>(m_rows) || c < 0 || c >= static_cast<int>(m_cols)){
+            continue;
+        }
+
         if(m_grid[r][c] == ALIVE){
             count++;
         }
