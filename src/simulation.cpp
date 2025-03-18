@@ -3,6 +3,15 @@
 #include <optional>
 #include <sstream>
 
+// Initial Patterns 
+const int Simulation::R_PENTOMINO[3][3] = 
+    {
+        {GameLife::DEAD,  GameLife::ALIVE, GameLife::ALIVE}, 
+        {GameLife::ALIVE, GameLife::ALIVE, GameLife::DEAD}, 
+        {GameLife::DEAD,  GameLife::ALIVE, GameLife::DEAD}
+    };
+
+
 
 Simulation::Simulation(SimConfig sc) : 
         m_window_width(sc.window_width), 
@@ -38,6 +47,25 @@ Simulation::~Simulation()
     std::cerr << "bye bye from ~Simulation()\n";
 }
 
+
+void Simulation::createPattern(PatternName patternName, int numInstances)
+{
+    std::vector<Cell> aliveList;
+
+    int r = m_window_height / 2 - 1;
+    int c = m_window_width / 2 - 1;
+
+    for(int i = 0; i < 3; i++, r++){
+        for(int j = 0; j < 3; j++, c++){
+            if(R_PENTOMINO[i][j] == GameLife::ALIVE){
+                Cell cell = {.state = GameLife::ALIVE, .row = r, .col = c};
+                aliveList.push_back(cell);
+            }
+        }
+    }
+
+    m_game.initializeGrid(aliveList);
+}
 
 void Simulation::run(void)
 {

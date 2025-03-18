@@ -4,12 +4,18 @@
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
-#include <memory>
 #include <random>
+
+struct Cell{
+    int state;
+    int row;
+    int col;
+};
 
 class GameLife{
     public:
 
+    // Cell State Constants
     static constexpr int DEAD = 0;
     static constexpr int ALIVE = 1;
     
@@ -20,15 +26,16 @@ class GameLife{
     static const int DR[]; 
     static const int DC[];
 
+
     // Constructor
     GameLife(size_t rows = 0, size_t cols = 0);
 
     // prevent copy construction
-    GameLife(const GameLife& rhs) = delete;
+    GameLife(const GameLife& rhs) = default;
 
     // move constructor - used to assign temporary r-values 
      // use noexcept because move assignment not allowed to throw an exception
-    GameLife(GameLife&& rhs) noexcept;
+    GameLife(GameLife&& rhs) = default;
 
     ~GameLife() = default;
    
@@ -37,8 +44,11 @@ class GameLife{
     int rows(void) const;
     int cols(void) const;
 
+    void initializeGrid(std::vector<Cell> aliveLocations);
+
     // initial patterns
     void initRandom(int min = DEAD, int max = ALIVE);  
+    //void initPattern(PatternName patternName = RPENTO, int numInstances = 1);
 
     void nextGeneration(void); 
 
@@ -48,12 +58,12 @@ class GameLife{
     // overloaded operators 
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);
 
-    // prevent copy assignment
-    GameLife& operator = (const GameLife& rhs) = delete;
+    // copy assignment
+    GameLife& operator = (const GameLife& rhs) = default;
 
     // move assignment
     // use noexcept because move assignment not allowed to throw an exception
-    GameLife& operator = (GameLife&& rhs) noexcept;
+    GameLife& operator = (GameLife&& rhs) = default;
 
     private:
 
@@ -61,11 +71,11 @@ class GameLife{
     size_t m_cols;
 
     // dynamically allocated 2d integer array
-    std::unique_ptr<std::unique_ptr<int[]>[]> m_grid;
+    std::vector<int> m_grid;
 
     // Private helper functions
-    std::unique_ptr<std::unique_ptr<int[]>[]> new2dGrid(size_t rows, size_t cols);
-
+    
+    int calcIndex(int row, int col) const;
     int countLiveNeighbors(int row, int col)const;
 };
 

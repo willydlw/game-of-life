@@ -45,6 +45,18 @@ struct SimConfig{
 class Simulation{
     public:
 
+    // Initialization Patterns
+    static const int R_PENTOMINO[3][3];
+
+    enum PatternName{
+        RPENTO,
+        GLIDER,
+        RANDOM
+    };
+
+
+    public:
+
     // Constructor
     Simulation(SimConfig sc);
 
@@ -53,10 +65,14 @@ class Simulation{
 
     void init(int framerate);
 
+    void createPattern(PatternName patterName, int numInstances);
+    
+
     void run(void);
 
     private:
 
+    // Simulation Data Members
     unsigned int m_window_width;
     unsigned int m_window_height;
     int m_cell_size;
