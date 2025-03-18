@@ -1,5 +1,8 @@
 #include "simulation.hpp"
 
+#include <imgui-SFML.h>
+#include <imgui.h>
+
 #include <optional>
 #include <sstream>
 
@@ -25,7 +28,7 @@ Simulation::Simulation(SimConfig sc) :
 
 void Simulation::init(int framerate)
 {
-    std::cerr << __func__ << " initialization executing\n";
+    std::cerr << "File:: " << __FILE__ << ", func: " << __func__ << " executing\n";
 
     m_window.create(sf::VideoMode({m_window_width, m_window_height}), "Game of Life Simulation"); 
     
@@ -40,6 +43,11 @@ void Simulation::init(int framerate)
     // TODO: pass intialization pattern to function (add to config)
     // for now, we test with random initialization
     m_game.initRandom();
+
+    if(!ImGui::SFML::Init(m_window)){
+        std::cerr << "[FATAL] ImGui::SFML::Init() failure\n";
+        exit(EXIT_FAILURE);
+    }
 }
 
 Simulation::~Simulation()
@@ -69,6 +77,8 @@ void Simulation::createPattern(PatternName patternName, int numInstances)
 
 void Simulation::run(void)
 {
+    sf::Clock clock; 
+
     sf::Text text(m_font);
     const char* genMsg = "Generation ";
 
@@ -80,13 +90,27 @@ void Simulation::run(void)
 
     while(m_window.isOpen()){
         while(const std::optional event = m_window.pollEvent()){
+            
+            ImGui::SFML::ProcessEvent(m_window, *event);
+
             if(event->is<sf::Event::Closed>()){
                 m_window.close();
             }
         }
 
-        m_window.clear(sf::Color::Black);
+        ImGui::SFML::Update(m_window, clock.restart());
+
+        ImGui::SetNextWindowPos(ImVec2(m_window_width - 200, 200));
+        ImGui::Begin("Button Example");
+        if(ImGui::Button("Pause"))
+        {
+            std::cerr << "Button clicked\n";
+        }
+        ImGui::End();
+
         m_game.nextGeneration();
+
+        m_window.clear(sf::Color::Black);
 
         std::stringstream ss;
         ss << genMsg << genCount << '\n';
@@ -98,6 +122,10 @@ void Simulation::run(void)
 
         // draw everything here
         m_game.draw(m_window, m_cell_size, 2.0f);
+
+        ImGui::SFML::Render(m_window);
         m_window.display();
     }
+
+    ImGui::SFML::Shutdown();
 }

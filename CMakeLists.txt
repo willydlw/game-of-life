@@ -77,4 +77,4 @@ target_include_directories(gameLife
     )
 
 # Link executable to required SFML modules
-target_link_libraries(gameLife PRIVATE SFML::Graphics)
+target_link_libraries(gameLife PRIVATE SFML::Graphics ImGui-SFML::ImGui-SFML)
