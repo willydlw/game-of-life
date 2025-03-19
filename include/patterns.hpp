@@ -3,48 +3,43 @@
 
 #include <string>
 
+
 namespace GlobalConstants
 {
-    enum PatternId{
+    // Game of Life Patterns 
+    constexpr int NUM_PATTERNS = 8;
+
+    enum PatternId : int {
         BLOCK,
         BEEHIVE,
-        BLINKER
+        LOAF,
+        BOAT,
+        TUB,
+        BLINKER,
+        TOAD,
+        BEACON
     };
 
     struct Pattern{
+        PatternId id;
         int rows;
         int cols;
-        int **data; 
+        int data[9][9]; 
     };
 
-    const char* patternNames[3] = {"Block", "Beehive", "Blinker"};
+    extern const char* patternNames[];
+    extern const Pattern patterns[NUM_PATTERNS];
 
-    // Initialization Patterns
 
-    const Pattern BLOCK_PATTERN = {.rows = 3, .cols = 3, .ptrData(&BLOCK)};
     constexpr int R_PENTIMINO_DIMENSION = 3;
     extern const int R_PENTOMINO[3][3];
 
-    // Still Life Patterns
-    constexpr int BLOCK_PATTERN_DIMENSION = 4;
-    extern const int BLOCK[4][4];
-
-    constexpr int BEEHIVE_PATTERN_ROWS = 5;   
-    constexpr int BEEHIVE_PATTERN_COLS = 6;     
-    extern const int BEEHIVE[5][6];      
-
-
-    // Oscillation Patterns
-    constexpr int BLINKER_PATTERN_DIMENSION = 5;
-    extern const int BLINKER[5][5];         // period 2
-    
-    constexpr int TOAD_PATTERN_DIMENSION = 6;
-    extern const int TOAD[6][6];               // period 2
-
-    constexpr int BEACON_PATTERN_DIMENSION = 4;
-    extern const int BEACON[4][4];          // period 2
-
-
+    // Still Life Patterns: Block, Beehive, Loaf, Boat, Tub
+    // Oscillators: Blinker(period 2), Toad(period 2), Beacon(period 2), 
+    //      Pulsar(period 3), Pentadecathlon(period 15)
+    // Spaceships: Glider, Lightweight spaceship (LWSS),
+    //      Middle-weight spaceship(MWSS), Heavyweight Spaceship (HWSS)
+     
 }
 
 #endif 
