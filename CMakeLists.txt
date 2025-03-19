@@ -58,7 +58,7 @@ target_sources(gameLife PRIVATE
     src/patterns.cpp
     )
 
-target_compile_features(gameLife PRIVATE cxx_std_17)
+target_compile_features(gameLife PRIVATE cxx_std_20)
 target_compile_options(gameLife PRIVATE -Wall -Wextra -pedantic)
 
 add_custom_target(copy_resources ALL 
