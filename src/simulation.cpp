@@ -6,15 +6,6 @@
 #include <optional>
 #include <sstream>
 
-// Initial Patterns 
-const int Simulation::R_PENTOMINO[3][3] = 
-    {
-        {GameLife::DEAD,  GameLife::ALIVE, GameLife::ALIVE}, 
-        {GameLife::ALIVE, GameLife::ALIVE, GameLife::DEAD}, 
-        {GameLife::DEAD,  GameLife::ALIVE, GameLife::DEAD}
-    };
-
-
 
 Simulation::Simulation(SimConfig sc) : 
         m_window_width(sc.window_width), 
@@ -56,6 +47,12 @@ Simulation::~Simulation()
 }
 
 
+void Simulation::loadPattern(std::string_view name)
+{
+    std::cerr << __func__ << ", string name: " << name << "\n";
+}
+
+#if 0
 void Simulation::createPattern(PatternName patternName, int numInstances)
 {
     std::vector<Cell> aliveList;
@@ -74,6 +71,8 @@ void Simulation::createPattern(PatternName patternName, int numInstances)
 
     m_game.initializeGrid(aliveList);
 }
+
+#endif
 
 void Simulation::run(void)
 {

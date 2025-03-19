@@ -2,6 +2,7 @@
 #define SIMULATION_H
 
 #include "gameLife.hpp"
+#include "patterns.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -45,18 +46,6 @@ struct SimConfig{
 class Simulation{
     public:
 
-    // Initialization Patterns
-    static const int R_PENTOMINO[3][3];
-
-    enum PatternName{
-        RPENTO,
-        GLIDER,
-        RANDOM
-    };
-
-
-    public:
-
     // Constructor
     Simulation(SimConfig sc);
 
@@ -65,9 +54,10 @@ class Simulation{
 
     void init(int framerate);
 
-    void createPattern(PatternName patterName, int numInstances);
-    
+    void loadPattern(std::string_view name);
 
+    //void createPattern(PatternName patternName, int numInstances)
+    
     void run(void);
 
     private:

@@ -55,6 +55,7 @@ target_sources(gameLife PRIVATE
     src/main.cpp 
     src/gameLife.cpp
     src/simulation.cpp 
+    src/patterns.cpp
     )
 
 target_compile_features(gameLife PRIVATE cxx_std_17)
