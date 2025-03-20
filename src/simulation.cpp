@@ -14,6 +14,8 @@ const char* Simulation::GENERATION_MSG  = "Generation ";
 Simulation::Simulation(SimConfig& sc) : 
         m_window_width(sc.window_width), 
         m_window_height(sc.window_height),
+        m_grid_width(sc.grid_width),
+        m_grid_height(sc.grid_height),
         m_cell_size(sc.cell_size),
         m_game(sc.grid_rows, sc.grid_cols)
 {
@@ -61,6 +63,22 @@ void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid)
     switch(pid)
     {
         case Pattern::BLOCK:
+        {
+            std::cerr << "BLOCK pattern\n";
+            int rowOffset = Pattern::patterns[pid].rows / 2; 
+            int colOffset = Pattern::patterns[pid].cols / 2;
+            for(int pr = 0; pr < Pattern::patterns[pid].rows; pr++){
+                for(int pc = 0; pc < Pattern::patterns[pid].cols; pc++){
+                    int r = pr + m_game.rows()/2 - rowOffset;
+                    int c = pc + m_game.cols()/2 - colOffset;
+                    std::cerr << "r: " << r << ", c: " << c << "\n";
+                    Cell cell = {.row = r, .col = c, 
+                        .state = Pattern::patterns[pid].data[pr][pc]};
+                    cells.push_back(cell);
+                }
+            }
+        }
+            break;
         case Pattern::BEEHIVE:
         case Pattern::LOAF:
         case Pattern::BOAT:
