@@ -4,20 +4,31 @@
 #include <imgui.h>
 
 #include <optional>
+#include <random>
 #include <sstream>
 
+// Simulation Class Constant Definitions
+const char* Simulation::GENERATION_MSG  = "Generation ";
 
-Simulation::Simulation(SimConfig sc) : 
+// Constructor
+Simulation::Simulation(SimConfig& sc) : 
         m_window_width(sc.window_width), 
         m_window_height(sc.window_height),
         m_cell_size(sc.cell_size),
         m_game(sc.grid_rows, sc.grid_cols)
 {
     std::cerr << __func__ << " constructor executing\n";
-    init(sc.framerate);
+    init(sc);
 }
 
-void Simulation::init(int framerate)
+// Destructor
+Simulation::~Simulation()
+{
+    std::cerr << "bye bye from ~Simulation()\n";
+}
+
+
+void Simulation::init(SimConfig& sc)
 {
     std::cerr << "File:: " << __FILE__ << ", func: " << __func__ << " executing\n";
 
@@ -29,57 +40,69 @@ void Simulation::init(int framerate)
         exit(EXIT_FAILURE);
     }
 
-    m_window.setFramerateLimit(framerate);
+    m_window.setFramerateLimit(sc.framerate);
 
     // TODO: pass intialization pattern to function (add to config)
     // for now, we test with random initialization
-    m_game.initRandom();
+    std::vector<Cell> aliveLocations;
+    initPattern(aliveLocations, sc.pid);
+    m_game.initializeGrid(aliveLocations);
 
+    #if 0
     if(!ImGui::SFML::Init(m_window)){
         std::cerr << "[FATAL] ImGui::SFML::Init() failure\n";
         exit(EXIT_FAILURE);
     }
+    #endif 
 }
 
-Simulation::~Simulation()
+void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid)
 {
-    std::cerr << "bye bye from ~Simulation()\n";
+    switch(pid)
+    {
+        case Pattern::BLOCK:
+        case Pattern::BEEHIVE:
+        case Pattern::LOAF:
+        case Pattern::BOAT:
+        case Pattern::TUB:
+        case Pattern::BLINKER:
+        case Pattern::TOAD:
+        case Pattern::BEACON:
+        break;
+        case Pattern::RANDOM:
+            initRandom(cells, GameLife::DEAD, GameLife::ALIVE);
+        break;
+    }
 }
 
 
-void Simulation::loadPattern(std::string_view name)
+
+void Simulation::initRandom(std::vector<Cell>& cells, int min, int max)
 {
-    std::cerr << __func__ << ", string name: " << name << "\n";
-}
+    // seed random number generator
+    // make it static to ensure it is only seeded once
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(min, max);
 
-#if 0
-void Simulation::createPattern(PatternName patternName, int numInstances)
-{
-    std::vector<Cell> aliveList;
-
-    int r = m_window_height / 2 - 1;
-    int c = m_window_width / 2 - 1;
-
-    for(int i = 0; i < 3; i++, r++){
-        for(int j = 0; j < 3; j++, c++){
-            if(R_PENTOMINO[i][j] == GameLife::ALIVE){
-                Cell cell = {.state = GameLife::ALIVE, .row = r, .col = c};
-                aliveList.push_back(cell);
+    for(int r = 0; r < m_game.rows(); r++){
+        for(int c = 0; c < m_game.cols(); c++){
+            int random_num = distrib(gen);
+            if(random_num == GameLife::ALIVE){
+                Cell cell{.row = r, .col = c, .state = GameLife::ALIVE};
+                cells.push_back(cell);
             }
         }
     }
-
-    m_game.initializeGrid(aliveList);
 }
 
-#endif
 
 void Simulation::run(void)
 {
     sf::Clock clock; 
 
     sf::Text text(m_font);
-    const char* genMsg = "Generation ";
+   
 
     text.setCharacterSize(24);      // in pixels 
     text.setFillColor(sf::Color::Red);
@@ -90,13 +113,14 @@ void Simulation::run(void)
     while(m_window.isOpen()){
         while(const std::optional event = m_window.pollEvent()){
             
-            ImGui::SFML::ProcessEvent(m_window, *event);
+            //ImGui::SFML::ProcessEvent(m_window, *event);
 
             if(event->is<sf::Event::Closed>()){
                 m_window.close();
             }
         }
 
+        #if 0
         ImGui::SFML::Update(m_window, clock.restart());
 
         ImGui::SetNextWindowPos(ImVec2(m_window_width - 200, 200));
@@ -106,13 +130,14 @@ void Simulation::run(void)
             std::cerr << "Button clicked\n";
         }
         ImGui::End();
+        #endif 
 
         m_game.nextGeneration();
 
         m_window.clear(sf::Color::Black);
 
         std::stringstream ss;
-        ss << genMsg << genCount << '\n';
+        ss << GENERATION_MSG << genCount << '\n';
         ++genCount;
         text.setString(ss.str());
         text.setPosition(sf::Vector2f{m_window.getSize().x - text.getGlobalBounds().size.x - 10, 
@@ -122,9 +147,9 @@ void Simulation::run(void)
         // draw everything here
         m_game.draw(m_window, m_cell_size, 2.0f);
 
-        ImGui::SFML::Render(m_window);
+        //ImGui::SFML::Render(m_window);
         m_window.display();
     }
 
-    ImGui::SFML::Shutdown();
+   // ImGui::SFML::Shutdown();
 }

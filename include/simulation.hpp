@@ -11,12 +11,13 @@
 struct SimConfig{
 
     // Default Constants 
-    static constexpr int WINDOW_WIDTH = 1000;
-    static constexpr int WINDOW_HEIGHT = 800;
+    static constexpr unsigned int WINDOW_WIDTH = 1000;
+    static constexpr unsigned int WINDOW_HEIGHT = 800;
     static constexpr int GRID_ROWS = 10;
     static constexpr int GRID_COLS = 10;
     static constexpr int CELL_SIZE = 40;
     static constexpr int FRAMERATE = 5;
+    static constexpr Pattern::PatternId DEFAULT_PATTERN = Pattern::RANDOM;
 
     unsigned int window_width;
     unsigned int window_height;
@@ -24,19 +25,22 @@ struct SimConfig{
     int grid_cols;
     int cell_size;
     int framerate;
+    Pattern::PatternId pid;
 
     SimConfig(int width = WINDOW_WIDTH, 
                 int height = WINDOW_HEIGHT,
                 int rows = GRID_ROWS,
                 int cols = GRID_COLS,
                 int csize = CELL_SIZE,
-                int frate = FRAMERATE
+                int frate = FRAMERATE,
+                Pattern::PatternId pid = DEFAULT_PATTERN
             ) : window_width(width),
                 window_height(height),
                 grid_rows(rows),
                 grid_cols(cols),
                 cell_size(csize),
-                framerate(frate)
+                framerate(frate),
+                pid(pid)
     {}
 
 };
@@ -44,17 +48,21 @@ struct SimConfig{
 
 
 class Simulation{
+
+    private:
+
+    static const char* GENERATION_MSG;
     public:
 
     // Constructor
-    Simulation(SimConfig sc);
+    Simulation(SimConfig& sc);
 
     // Destructor
     ~Simulation();
 
-    void init(int framerate);
+    void init(SimConfig& sc);
 
-    void loadPattern(std::string_view name);
+    void initPattern(std::vector<Cell>& cells, Pattern::PatternId pid = Pattern::RANDOM);
 
     //void createPattern(PatternName patternName, int numInstances)
     
@@ -69,8 +77,15 @@ class Simulation{
 
     GameLife m_game;
 
+    // SFML 
     sf::RenderWindow m_window;
     sf::Font m_font;
+   
+
+    private:        // helper functions
+
+    // initial patterns
+    void initRandom(std::vector<Cell>& cells, int min, int max);      
 };
 
 #endif 

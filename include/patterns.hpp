@@ -4,7 +4,7 @@
 #include <string>
 
 
-namespace GlobalConstants
+namespace Pattern
 {
     // Game of Life Patterns 
     constexpr int NUM_PATTERNS = 8;
@@ -17,10 +17,11 @@ namespace GlobalConstants
         TUB,
         BLINKER,
         TOAD,
-        BEACON
+        BEACON,
+        RANDOM
     };
 
-    struct Pattern{
+    struct PatternInfo{
         PatternId id;
         int rows;
         int cols;
@@ -28,7 +29,7 @@ namespace GlobalConstants
     };
 
     extern const char* patternNames[];
-    extern const Pattern patterns[NUM_PATTERNS];
+    extern const PatternInfo patterns[NUM_PATTERNS];
 
 
     constexpr int R_PENTIMINO_DIMENSION = 3;

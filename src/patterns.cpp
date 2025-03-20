@@ -1,6 +1,6 @@
 #include "patterns.hpp"
 
-namespace GlobalConstants{
+namespace Pattern{
     
     const char* patternNames[] = {
         "Block", "Beehive", "Loaf", "Boat", "Tub", 
@@ -15,7 +15,7 @@ const int R_PENTOMINO[3][3] =
     };
 
 
-    const Pattern patterns[NUM_PATTERNS] = 
+    const PatternInfo patterns[NUM_PATTERNS] = 
     {
         {.id = BLOCK, .rows = 3, .cols = 3, .data = 
             {

@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
-#include <random>
 
 struct Cell{
     int state;
@@ -46,9 +45,7 @@ class GameLife{
 
     void initializeGrid(std::vector<Cell> aliveLocations);
 
-    // initial patterns
-    void initRandom(int min = DEAD, int max = ALIVE);  
-    //void initPattern(PatternName patternName = RPENTO, int numInstances = 1);
+
 
     void nextGeneration(void); 
 

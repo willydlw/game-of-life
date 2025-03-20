@@ -35,20 +35,7 @@ void GameLife::initializeGrid(std::vector<Cell> aliveLocations)
     }
 }
 
-void GameLife::initRandom(int min, int max)
-{
-    // seed random number generator
-    // make it static to ensure it is only seeded once
-    static std::mt19937 generator(std::random_device{}());
 
-    std::uniform_int_distribution<int> distrib(min, max);
-
-    for(size_t r = 0; r < m_rows; r++){
-        for(size_t c = 0; c < m_cols; c++){
-            m_grid[calcIndex(r,c)] = distrib(generator);
-        }
-    }
-}
 
 #if 0
 void GameLife::initPattern(PatternName patternName, int numInstances)
