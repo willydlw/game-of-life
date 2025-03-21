@@ -51,6 +51,8 @@ class GameLife{
 
     // render the grid
     void draw(sf::RenderWindow& window, int cellSize, float thickness);
+
+    void draw_grid_lines(sf::RenderWindow& window, int cellSize, float thickness = 1.0f);
     
     // overloaded operators 
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);

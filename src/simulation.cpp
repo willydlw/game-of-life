@@ -60,25 +60,10 @@ void Simulation::init(SimConfig& sc)
 
 void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid)
 {
+    
     switch(pid)
     {
         case Pattern::BLOCK:
-        {
-            std::cerr << "BLOCK pattern\n";
-            int rowOffset = Pattern::patterns[pid].rows / 2; 
-            int colOffset = Pattern::patterns[pid].cols / 2;
-            for(int pr = 0; pr < Pattern::patterns[pid].rows; pr++){
-                for(int pc = 0; pc < Pattern::patterns[pid].cols; pc++){
-                    int r = pr + m_game.rows()/2 - rowOffset;
-                    int c = pc + m_game.cols()/2 - colOffset;
-                    std::cerr << "r: " << r << ", c: " << c << "\n";
-                    Cell cell = {.row = r, .col = c, 
-                        .state = Pattern::patterns[pid].data[pr][pc]};
-                    cells.push_back(cell);
-                }
-            }
-        }
-            break;
         case Pattern::BEEHIVE:
         case Pattern::LOAF:
         case Pattern::BOAT:
@@ -86,6 +71,19 @@ void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid)
         case Pattern::BLINKER:
         case Pattern::TOAD:
         case Pattern::BEACON:
+        {
+            int rowOffset = m_game.rows()/2 - Pattern::patterns[pid].rows;
+            int colOffset = m_game.cols()/2 - Pattern::patterns[pid].cols;
+            for(int pr = 0; pr < Pattern::patterns[pid].rows; pr++){
+                for(int pc = 0; pc < Pattern::patterns[pid].cols; pc++){
+                    int r = pr + rowOffset;
+                    int c = pc + colOffset;
+                    Cell cell = {.row = r, .col = c, 
+                        .state = Pattern::patterns[pid].data[pr][pc]};
+                    cells.push_back(cell);
+                }
+            }
+        }
         break;
         case Pattern::RANDOM:
             initRandom(cells, GameLife::DEAD, GameLife::ALIVE);
@@ -117,6 +115,7 @@ void Simulation::initRandom(std::vector<Cell>& cells, int min, int max)
 
 void Simulation::run(void)
 {
+    sf::Color Light_Gray {211,211,211};
     sf::Clock clock; 
 
     sf::Text text(m_font);
@@ -152,7 +151,7 @@ void Simulation::run(void)
 
         m_game.nextGeneration();
 
-        m_window.clear(sf::Color::Black);
+        m_window.clear(Light_Gray);
 
         std::stringstream ss;
         ss << GENERATION_MSG << genCount << '\n';
@@ -163,7 +162,9 @@ void Simulation::run(void)
         m_window.draw(text);
 
         // draw everything here
-        m_game.draw(m_window, m_cell_size, 2.0f);
+       m_game.draw(m_window, m_cell_size, 2.0f);
+
+        m_game.draw_grid_lines(m_window, m_cell_size, 2.0f);
 
         //ImGui::SFML::Render(m_window);
         m_window.display();

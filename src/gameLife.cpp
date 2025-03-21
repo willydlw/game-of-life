@@ -124,6 +124,29 @@ void GameLife::draw(sf::RenderWindow& window, int cellSize, float thickness)
     
 }
 
+void GameLife::draw_grid_lines(sf::RenderWindow& window, int cellSize, float thickness)
+{
+    sf::RectangleShape vertLine(sf::Vector2f(thickness, cellSize * m_rows));
+    sf::RectangleShape horzLine(sf::Vector2f(cellSize * m_cols, thickness));
+
+    vertLine.setFillColor(sf::Color::Blue);
+    horzLine.setFillColor(sf::Color::Blue);
+
+    for(size_t c = 0; c <= m_cols; c++){
+            int x = c * cellSize;
+            int y = 0;
+            vertLine.setPosition(sf::Vector2f(x,y));
+            window.draw(vertLine);
+    }
+
+    for(size_t r = 0; r <= m_rows; r++){
+        int x = 0;
+        int y = r * cellSize;
+        horzLine.setPosition(sf::Vector2f(x,y));
+        window.draw(horzLine);
+    }
+}
+
 
 std::ostream& operator << (std::ostream& os, const GameLife& obj)
 {
