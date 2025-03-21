@@ -58,7 +58,7 @@ struct SimConfig{
 class Simulation{
 
     private:
-
+    
     static const char* GENERATION_MSG;
     public:
 
