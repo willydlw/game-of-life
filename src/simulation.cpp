@@ -58,7 +58,7 @@ void Simulation::init(SimConfig& sc)
     #endif 
 }
 
-void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid)
+void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid, int numInstances)
 {
     
     switch(pid)
@@ -72,47 +72,51 @@ void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid)
         case Pattern::TOAD:
         case Pattern::BEACON:
         {
-            int remainingRows = m_game.rows() - Pattern::patterns[pid].rows;
-            int remainingCols = m_game.cols() - Pattern::patterns[pid].cols;
-            std::cerr << "remaining rows: " << remainingRows << ", cols: " << remainingCols << "\n";
-            int rowOffset = remainingRows/4;
-            int colOffset = remainingCols/4;
+            int rowInstances = numInstances;
+            int colInstances = numInstances;
+            int patternRows = Pattern::patterns[pid].rows;
+            int patternCols = Pattern::patterns[pid].cols;
+
+            int gridRows = m_game.rows();
+            int gridCols = m_game.cols();
+
+            std::cerr << "pattern: " << Pattern::patternNames[pid] << "\n";
+            std::cerr << "patternRows: " << patternRows << ", patternCols: " << patternCols << "\n";
+            std::cerr << "grid rows:   " << gridRows << ", grid cols: " << gridCols << "\n";
+
+            while(rowInstances > (gridRows/patternRows)){
+                --rowInstances;
+            }
+
+            while(colInstances > gridCols/patternCols)
+            {
+                --colInstances;
+            }
+
+            std::cerr << "numInstances: " << numInstances << ", rowInstances: " << rowInstances 
+                << ", colInstances: " << colInstances << "\n";
+            
+            
+            int rowOffset = (gridRows - (rowInstances * patternRows)) / rowInstances;
+            int colOffset = (gridCols - (colInstances * patternCols)) / colInstances;
 
             std::cerr << "rowOffset: " << rowOffset << ", colOffset: " << colOffset << "\n";
             
-            // place 4 of the same pattern in the grid
             #if 1
-            for(int i = 0; i < 2; i++){
-                int loopRowOffset = i * Pattern::patterns[pid].rows;
+            for(int i = 0; i < colInstances; i++){
+                // iterate through the pattern
                 for(int pr = 0; pr < Pattern::patterns[pid].rows; pr++){
                     for(int pc = 0; pc < Pattern::patterns[pid].cols; pc++){
-                        int r = pr + rowOffset + loopRowOffset;
-                        int c = pc + colOffset;
-                        std::cerr << "i: " << i << ", r: " << r << ", c: " << c << "\n";
-                        Cell cell = {.row = r, .col = c, 
-                            .state = Pattern::patterns[pid].data[pr][pc]};
+                        int r = i * pr + rowOffset;
+                        int c = i * pc + colOffset;
+                        //std::cerr << "i: " << i << ", r: " << r << ", c: " << c << "\n";
+                        Cell cell = {.state = Pattern::patterns[pid].data[pr][pc],
+                        .row = r, .col = c};
                         cells.push_back(cell);
                     }
                 }
             }
             #endif
-
-            #if 0
-            for(int i = 0; i < 4; i++){
-                int loopRowOffset = i * Pattern::patterns[pid].rows;
-                int loopColOffset = i * Pattern::patterns[pid].cols;
-                for(int pr = 0; pr < Pattern::patterns[pid].rows; pr++){
-                    for(int pc = 0; pc < Pattern::patterns[pid].cols; pc++){
-                        int r = pr + rowOffset + loopRowOffset;
-                        int c = pc + colOffset + loopColOffset;
-                        std::cerr << "i: " << i << ", r: " << r << ", c: " << c << "\n";
-                        Cell cell = {.row = r, .col = c, 
-                            .state = Pattern::patterns[pid].data[pr][pc]};
-                        cells.push_back(cell);
-                    }
-                }
-            }
-            #endif 
         }
         break;
         case Pattern::RANDOM:
@@ -135,7 +139,7 @@ void Simulation::initRandom(std::vector<Cell>& cells, int min, int max)
         for(int c = 0; c < m_game.cols(); c++){
             int random_num = distrib(gen);
             if(random_num == GameLife::ALIVE){
-                Cell cell{.row = r, .col = c, .state = GameLife::ALIVE};
+                Cell cell{.state = GameLife::ALIVE, .row = r, .col = c};
                 cells.push_back(cell);
             }
         }

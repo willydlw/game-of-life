@@ -17,7 +17,7 @@ const int R_PENTOMINO[3][3] =
 
     const PatternInfo patterns[NUM_PATTERNS] = 
     {
-        {.id = BLOCK, .rows = 3, .cols = 3, .data = 
+        {.id = BLOCK, .rows = 4, .cols = 4, .data = 
             {
                 {0,0,0,0},
                 {0,1,1,0},

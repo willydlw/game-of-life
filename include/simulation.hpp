@@ -70,7 +70,7 @@ class Simulation{
 
     void init(SimConfig& sc);
 
-    void initPattern(std::vector<Cell>& cells, Pattern::PatternId pid = Pattern::RANDOM);
+    void initPattern(std::vector<Cell>& cells, Pattern::PatternId pid = Pattern::BLOCK, int numInstances = 4);
 
     //void createPattern(PatternName patternName, int numInstances)
     
