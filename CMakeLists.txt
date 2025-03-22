@@ -59,7 +59,7 @@ target_sources(gameLife PRIVATE
     )
 
 target_compile_features(gameLife PRIVATE cxx_std_20)
-target_compile_options(gameLife PRIVATE -Wall -Wextra -pedantic)
+target_compile_options(gameLife PRIVATE -Wall -Wextra -Wmissing-field-initializers -pedantic)
 
 add_custom_target(copy_resources ALL 
     COMMAND ${CMAKE_COMMAND} -E copy_directory 
