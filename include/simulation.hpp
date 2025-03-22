@@ -81,8 +81,8 @@ class Simulation{
     // Simulation Data Members
     unsigned int m_window_width;
     unsigned int m_window_height;
-    unsigned int m_grid_width;
-    unsigned int m_grid_height;
+    //unsigned int m_grid_width;
+    //unsigned int m_grid_height;
 
     int m_cell_size;
 
