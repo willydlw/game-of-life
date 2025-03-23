@@ -72,6 +72,8 @@ class GameLife{
     // dynamically allocated 2d integer array
     std::vector<int> m_grid;
 
+    sf::Text m_pattern_text;
+
     // Private helper functions
     
     int calcIndex(int row, int col) const;

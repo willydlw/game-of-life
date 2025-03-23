@@ -14,8 +14,6 @@ const char* Simulation::GENERATION_MSG  = "Generation ";
 Simulation::Simulation(SimConfig& sc) : 
         m_window_width(sc.window_width), 
         m_window_height(sc.window_height),
-       // m_grid_width(sc.grid_width),
-       // m_grid_height(sc.grid_height),
         m_cell_size(sc.cell_size),
         m_game(sc.grid_rows, sc.grid_cols)
 {
@@ -43,6 +41,8 @@ void Simulation::init(SimConfig& sc)
     }
 
     m_window.setFramerateLimit(sc.framerate);
+
+    m_init_pid = sc.pid;
 
     // TODO: pass intialization pattern to function (add to config)
     // for now, we test with random initialization
@@ -97,22 +97,25 @@ void Simulation::initPattern(std::vector<Cell>& cells, Pattern::PatternId pid, i
                 << ", colInstances: " << colInstances << "\n";
             
             
-            int rowOffset = (gridRows - (rowInstances * patternRows)) / rowInstances;
-            int colOffset = (gridCols - (colInstances * patternCols)) / colInstances;
+            int rowOffset = (gridRows - (rowInstances * patternRows)) / (rowInstances > 1? rowInstances:2);
+            int colOffset = (gridCols - (colInstances * patternCols)) / (colInstances > 1? colInstances:2);
 
             std::cerr << "rowOffset: " << rowOffset << ", colOffset: " << colOffset << "\n";
             
             #if 1
-            for(int i = 0; i < colInstances; i++){
-                // iterate through the pattern
-                for(int pr = 0; pr < Pattern::patterns[pid].rows; pr++){
-                    for(int pc = 0; pc < Pattern::patterns[pid].cols; pc++){
-                        int r = i * pr + rowOffset;
-                        int c = i * pc + colOffset;
-                        //std::cerr << "i: " << i << ", r: " << r << ", c: " << c << "\n";
-                        Cell cell = {.state = Pattern::patterns[pid].data[pr][pc],
-                        .row = r, .col = c};
-                        cells.push_back(cell);
+            for(int ri = 0; ri < rowInstances; ri++){
+                for(int ci = 0; ci < colInstances; ci++){
+                    // iterate through the pattern
+                    for(int pr = 0; pr < Pattern::patterns[pid].rows; pr++){
+                        for(int pc = 0; pc < Pattern::patterns[pid].cols; pc++){
+                            int r = pr + rowOffset + ri * patternRows;
+                            int c = pc + colOffset + ci * patternCols; 
+                            //std::cerr << "ri: " << ri << ", ci: " << ci 
+                            //        << ", r: " << r << ", c: " << c << "\n";
+                            Cell cell = {.state = Pattern::patterns[pid].data[pr][pc],
+                                        .row = r, .col = c};
+                            cells.push_back(cell);
+                        }
                     }
                 }
             }
@@ -152,12 +155,19 @@ void Simulation::run(void)
     sf::Color Light_Gray {211,211,211};
     sf::Clock clock; 
 
-    sf::Text text(m_font);
-   
+    sf::Text generation_text(m_font);
+    generation_text.setCharacterSize(24);      // in pixels 
+    generation_text.setFillColor(sf::Color::Red);
+    generation_text.setStyle(sf::Text::Bold);
 
-    text.setCharacterSize(24);      // in pixels 
-    text.setFillColor(sf::Color::Red);
-    text.setStyle(sf::Text::Bold);
+    sf::Text pattern_text(m_font);
+    pattern_text.setCharacterSize(24);
+    pattern_text.setFillColor(sf::Color::Black);
+    pattern_text.setStyle(sf::Text::Bold);
+    pattern_text.setString(Pattern::patternNames[m_init_pid]);
+
+    pattern_text.setPosition(sf::Vector2f{m_window.getSize().x - pattern_text.getGlobalBounds().size.x - 10, 
+         110});
 
     unsigned int genCount = 1;
 
@@ -190,10 +200,12 @@ void Simulation::run(void)
         std::stringstream ss;
         ss << GENERATION_MSG << genCount << '\n';
         ++genCount;
-        text.setString(ss.str());
-        text.setPosition(sf::Vector2f{m_window.getSize().x - text.getGlobalBounds().size.x - 10, 
-            text.getGlobalBounds().size.y + 10});
-        m_window.draw(text);
+        generation_text.setString(ss.str());
+        generation_text.setPosition(sf::Vector2f{m_window.getSize().x - generation_text.getGlobalBounds().size.x - 10, 
+                                    generation_text.getGlobalBounds().size.y + 10});
+        m_window.draw(generation_text);
+
+        m_window.draw(pattern_text);
 
         // draw everything here
        m_game.draw(m_window, m_cell_size, 2.0f);

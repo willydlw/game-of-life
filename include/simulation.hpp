@@ -19,7 +19,7 @@ struct SimConfig{
     static constexpr int GRID_COLS = 10;
     static constexpr int CELL_SIZE = GRID_WIDTH / GRID_COLS;
     static constexpr int FRAMERATE = 5;
-    static constexpr Pattern::PatternId DEFAULT_PATTERN = Pattern::BLOCK;
+    static constexpr Pattern::PatternId DEFAULT_PATTERN = Pattern::BLINKER;
 
     unsigned int window_width;
     unsigned int window_height;
@@ -81,9 +81,8 @@ class Simulation{
     // Simulation Data Members
     unsigned int m_window_width;
     unsigned int m_window_height;
-    //unsigned int m_grid_width;
-    //unsigned int m_grid_height;
-
+   
+    // Grid Drawing Data
     int m_cell_size;
 
     GameLife m_game;
@@ -91,8 +90,9 @@ class Simulation{
     // SFML 
     sf::RenderWindow m_window;
     sf::Font m_font;
-   
 
+    Pattern::PatternId m_init_pid;
+   
     private:        // helper functions
 
     // initial patterns

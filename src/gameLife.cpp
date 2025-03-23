@@ -36,21 +36,6 @@ void GameLife::initializeGrid(std::vector<Cell> aliveLocations)
 }
 
 
-
-#if 0
-void GameLife::initPattern(PatternName patternName, int numInstances)
-{
-    size_t r = 
-    // treat pattern as 3x3 rectangle
-    for(size_t i = 0; i < 3; i++){
-        for(size_t j = 0; j < 3; j++){
-
-        }
-    }
-
-}
-#endif 
-
 int GameLife::countLiveNeighbors(int row, int col)const
 {
     int count = 0;
